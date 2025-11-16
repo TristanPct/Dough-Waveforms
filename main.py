@@ -2,19 +2,20 @@ import os
 import json
 
 def generate_json():
+    pitch = "d2"
     data = {
         "_base": "https://raw.githubusercontent.com/Bubobubobubobubo/Dough-Waveforms/main/"
     }
     
     # Iterate through each directory in the current folder
     for dir_name, _, file_list in os.walk('.'):
-        if dir_name == '.' or dir_name.startswith('./.'):
+        dir_name = dir_name[2:] # Remove the './' from the directory name
+        if not dir_name.startswith('wt_'): # Keep only WaveTables directories
             continue
-        dir_name = dir_name[2:]  # Remove the './' from the directory name
-        data[dir_name] = []
+        data[dir_name] = {pitch: []}
         for file_name in file_list:
             if file_name.lower().endswith('.wav'):
-                data[dir_name].append(f"{dir_name}/{file_name}")
+                data[dir_name][pitch].append(f"{dir_name}/{file_name}")
     with open('strudel.json', 'w') as json_file:
         # Minify if possible
         json.dump(data, json_file, separators=(',', ':'))
